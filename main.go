@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"sync"
@@ -110,7 +111,7 @@ func runAction(actionName string) {
 		for {
 			select {
 			case msg := <-feedbackChannel:
-				// fmt.Println(msg) // Uncomment to see the actions that have been run
+				fmt.Println(msg) // Uncomment to see the actions that have been run
 				wg.Done()
 				processCompletedRunnable(msg)
 			}

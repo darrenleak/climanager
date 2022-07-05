@@ -3,6 +3,14 @@ actions:
     runnables:
       - name: "changeNvmVersion" # Names cannot have spaces
         command: "nvm use default"
+      - name: "afterStrapiInstallOne"
+        dependsOn:
+          - "installStrapi"
+        command: "npm install strapi"
+      - name: "afterStrapiInstallTwo"
+        dependsOn:
+          - "installStrapi"
+        command: "npm install strapi"
       - name: "installStrapi"
         dependsOn:
           - "changeNvmVersion"
