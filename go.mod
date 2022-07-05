@@ -1,4 +1,4 @@
-module atmtly
+module CLIManager
 
 go 1.18
 
