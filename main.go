@@ -110,6 +110,7 @@ func runAction(actionName string) {
 		for {
 			select {
 			case msg := <-feedbackChannel:
+				// fmt.Println(msg) // Uncomment to see the actions that have been run
 				wg.Done()
 				processCompletedRunnable(msg)
 			}
