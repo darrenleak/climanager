@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"sync"
 
@@ -45,10 +46,11 @@ var allRunnables = make(map[string]map[string]Runnable)
 var channels = make(map[string]chan string)
 
 func main() {
+	actionToRun := os.Args[1]
 	allRunnables = setupCommands([]string{"test.yml"})
 
 	// TODO: This action will come in from the cli
-	runAction("setupStrapi")
+	runAction(actionToRun)
 }
 
 var dependentsMap = make(map[string][]string)

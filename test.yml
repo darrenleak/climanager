@@ -1,4 +1,8 @@
 actions:
+  - name: "something"
+    runnables:
+      - name: "somthing2"
+        command: "hello"
   - name: "setupStrapi"
     runnables:
       - name: "changeNvmVersion" # Names cannot have spaces
