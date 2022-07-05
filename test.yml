@@ -1,0 +1,14 @@
+actions:
+  - name: "setupStrapi"
+    runnables:
+      - name: "changeNvmVersion" # Names cannot have spaces
+        command: "nvm use default"
+      - name: "installStrapi"
+        dependsOn:
+          - "changeNvmVersion"
+        command: "npm install strapi"
+  - name: "utils" # Keyword
+    runnables:
+      - name: "resizeImage" # Validate input type (string vs int vs bool)
+        # alias: "resizeImage --width --height"
+        command: "imagemagik resize {width} {height}" # Need to be able to pass in values
