@@ -1,5 +1,13 @@
 package main
 
+/*
+TODO:
+1. Set yaml files
+2. Register commands
+	Sometimes exec cannot find a command, eg nvm. The user should be able to register commands and the paths to the executable
+		- Auto check on failure if command is registered. Acts more as a try then.
+*/
+
 import (
 	"fmt"
 	"io/ioutil"
@@ -15,7 +23,7 @@ type Runnable struct {
 	Name      string   //`yaml:"name"`
 	DependsOn []string `yaml:"dependsOn"`
 	Command   string   //`yaml:"command"`
-	Alias     string
+	Alias     string   //`yaml:"alias"`
 }
 
 type Action struct {

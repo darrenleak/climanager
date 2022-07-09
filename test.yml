@@ -1,8 +1,8 @@
 actions:
   - name: "test"
     runnables:
-      - name: "test"
-        command: "k6"
+      - name: "npm"
+        command: "npm"
   - name: "setupStrapi"
     runnables:
       - name: "changeNvmVersion" # Names cannot have spaces
