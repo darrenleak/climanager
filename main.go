@@ -53,10 +53,19 @@ type RunnableStatus struct {
 
 var allRunnables = make(map[string]map[string]Runnable)
 var channels = make(map[string]chan string)
+var shell string
 
 func main() {
+	args := os.Args
 	actionToRun := os.Args[1]
 	allRunnables = setupCommands([]string{"/Users/darren/Developer/Projects/CLIManager/test.yml"})
+
+	if args[1] == "shell" {
+		shell = args[2]
+		actionToRun = args[3]
+	} else {
+		shell = "bash"
+	}
 
 	// TODO: This action will come in from the cli
 	runAction(actionToRun)
@@ -171,11 +180,12 @@ func runnableRoutine(runnable Runnable, feedbackChannel chan string) {
 }
 
 func runCommand(runnable Runnable, feedbackChannel chan string) {
-	command := exec.Command("bash", "-c", runnable.Command)
+	command := exec.Command(shell, "-c", runnable.Command)
 	out, err := command.CombinedOutput()
 
 	if err != nil {
 		fmt.Println(err.Error())
+		fmt.Println(string(out))
 		feedbackChannel <- runnable.Name //Blocking so never ends if you don't listen
 		return
 	}

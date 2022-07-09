@@ -1,8 +1,8 @@
 actions:
   - name: "test"
     runnables:
-      - name: "npm"
-        command: "npm"
+      - name: "changeNvmVersion" # Names cannot have spaces
+        command: "echo $HOME"
   - name: "setupStrapi"
     runnables:
       - name: "changeNvmVersion" # Names cannot have spaces
