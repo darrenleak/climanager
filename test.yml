@@ -1,20 +1,12 @@
 actions:
-  - name: "something"
+  - name: "test"
     runnables:
-      - name: "somthing2"
-        command: "hello"
+      - name: "test"
+        command: "nvm use default"
   - name: "setupStrapi"
     runnables:
       - name: "changeNvmVersion" # Names cannot have spaces
         command: "nvm use default"
-      - name: "afterStrapiInstallOne"
-        dependsOn:
-          - "installStrapi"
-        command: "npm install strapi"
-      - name: "afterStrapiInstallTwo"
-        dependsOn:
-          - "installStrapi"
-        command: "npm install strapi"
       - name: "installStrapi"
         dependsOn:
           - "changeNvmVersion"
