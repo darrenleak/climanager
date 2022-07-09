@@ -2,7 +2,7 @@ actions:
   - name: "test"
     runnables:
       - name: "test"
-        command: "nvm use default"
+        command: "k6"
   - name: "setupStrapi"
     runnables:
       - name: "changeNvmVersion" # Names cannot have spaces
