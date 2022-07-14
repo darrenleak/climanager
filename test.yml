@@ -1,8 +1,12 @@
 actions:
-  - name: "test"
+  - name: "whoami"
     runnables:
       - name: "changeNvmVersion" # Names cannot have spaces
-        command: "echo $HOME"
+        command: "whoami"
+  - name: "nvm"
+    runnables:
+      - name: "source" # Names cannot have spaces
+        command: "source ~/.zshrc && nvm"
   - name: "setupStrapi"
     runnables:
       - name: "changeNvmVersion" # Names cannot have spaces

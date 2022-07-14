@@ -3,12 +3,13 @@ package main
 /*
 TODO:
 1. Set yaml files
-2. Register commands
+3. Register commands
 	Sometimes exec cannot find a command, eg nvm. The user should be able to register commands and the paths to the executable
 		- Auto check on failure if command is registered. Acts more as a try then.
 */
 
 import (
+	"CLIManager/commandManager"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -54,20 +55,16 @@ type RunnableStatus struct {
 var allRunnables = make(map[string]map[string]Runnable)
 var channels = make(map[string]chan string)
 var shell string
+var profilePath string
 
 func main() {
 	args := os.Args
 	actionToRun := os.Args[1]
 	allRunnables = setupCommands([]string{"/Users/darren/Developer/Projects/CLIManager/test.yml"})
 
-	if args[1] == "shell" {
-		shell = args[2]
-		actionToRun = args[3]
-	} else {
-		shell = "bash"
-	}
+	commandManager.ParseArgs(args)
 
-	// TODO: This action will come in from the cli
+	// // TODO: This action will come in from the cli
 	runAction(actionToRun)
 }
 
