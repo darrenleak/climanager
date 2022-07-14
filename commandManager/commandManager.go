@@ -53,18 +53,6 @@ func ParseArgs(args []string) {
 			}
 		}
 	}
-
-	// // TODO: This is bad
-	// // There should be an argument processor
-	// // to handle all of this stuff
-	// if args[1] == "init" {
-
-	// 	// } else if args[1] == "shell" {
-	// 	// 	shell = args[2]
-	// 	// 	actionToRun = args[3]
-	// 	// } else {
-	// 	// 	shell = "bash"
-	// }
 }
 
 func doesNextArgumentExistAndIsNotCommand(arg string) bool {
