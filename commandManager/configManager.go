@@ -15,7 +15,33 @@ type Config struct {
 	CommandFiles []string
 }
 
+func loadConfig() (Config, error) {
+	jsonFile, fileOpenError := os.Open("./config.json")
+
+	if fileOpenError != nil {
+		return Config{}, fileOpenError
+	}
+
+	configData, configReadError := ioutil.ReadAll(jsonFile)
+
+	if configReadError != nil {
+		return Config{}, configReadError
+	}
+
+	var config Config
+	json.Unmarshal(configData, &config)
+
+	return config, nil
+}
+
 func initConfig() {
+	config, configLoadError := loadConfig()
+
+	if configLoadError != nil {
+		// TODO: Handle this better
+		fmt.Println("Config load error. Either no file exists or it failed to read")
+	}
+
 	initValues := []string{
 		"Shell(default is Bash):",
 		"Action files(file path separated by comma)",
@@ -35,12 +61,26 @@ func initConfig() {
 		inputValues = append(inputValues, line)
 	}
 
-	config := buildConfig(inputValues)
-	writeConfig(config)
+	updateConfig := buildConfig(inputValues, config)
+	writeConfig(updateConfig)
 }
 
-func buildConfig(initConfigSettings []string) Config {
-	config := Config{}
+/*
+TODO:
+
+This needs to be fixed. It needs to understand the the commands that the user
+has entered and it needs to update the corresponding value.
+
+Currently this is updating in the order the commands come in, which causes
+issues when you do something like:
+
+--config --commandFiles
+
+The above command will update the Shell value in the config, not the CommandFiles
+in the config
+*/
+func buildConfig(initConfigSettings []string, providedConfig Config) Config {
+	config := providedConfig
 
 	for settingIndex, setting := range initConfigSettings {
 		if settingIndex == 0 {
@@ -63,6 +103,13 @@ func writeConfig(config Config) {
 }
 
 func processConfigInput(args []string) Config {
+	config, configLoadError := loadConfig()
+
+	if configLoadError != nil {
+		// TODO: Handle this better
+		fmt.Println("Config load error. Either no file exists or it failed to read")
+	}
+
 	inputValues := []string{}
 
 	for argIndex, arg := range args {
@@ -76,7 +123,7 @@ func processConfigInput(args []string) Config {
 		inputValues = append(inputValues, inputValue)
 	}
 
-	return buildConfig(inputValues)
+	return buildConfig(inputValues, config)
 }
 
 func getTextHint(arg string) string {

@@ -8,11 +8,23 @@ import (
 	"strings"
 )
 
+/*
+TODO: Implement
+- Add commandFileAppend
+- Add commandFileRemove
+- Add viewConfig
+
+Without these two, when you update your config, it will overwrite all your
+commandFiles with the new value.
+*/
 const (
-	Init         string = "--init"
-	Shell        string = "--shell"
-	CommandFiles string = "--commandFiles"
-	SetConfig    string = "--config"
+	Init               string = "--init"
+	Shell              string = "--shell"
+	CommandFiles       string = "--commandFiles"
+	CommandFilesAppend string = "--commandFilesAppend"
+	CommandFilesRemove string = "--commandFilesRemove"
+	SetConfig          string = "--config"
+	ViewConfig         string = "--viewConfig"
 )
 
 type ParsedCommand struct {
