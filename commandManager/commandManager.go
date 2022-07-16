@@ -5,13 +5,24 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 const (
 	Init         string = "--init"
 	Shell        string = "--shell"
 	CommandFiles string = "--commandFiles"
+	SetConfig    string = "--config"
 )
+
+type ParsedCommand struct {
+	Command string
+	Value   string
+}
+
+type ParsedCommands struct {
+	actions []ParsedCommand
+}
 
 /*
 What about a middleware architecture for this?
@@ -26,37 +37,34 @@ func ParseArgs(args []string) {
 		return
 	}
 
-	for argIndex, arg := range args {
-		if argIndex == 0 {
-			continue
-		}
+	argsCount := len(args)
 
-		// If init is the first argument, ignore the rest
-		if arg == Init && argIndex == 1 {
-			cliInit()
-			break
-		}
+	// If init is the first argument, ignore the rest
+	if argsCount > 1 && args[1] == Init {
+		initConfig()
+	}
 
-		if arg == Shell {
-			if doesNextArgumentExistAndIsNotCommand("") {
-				// Get value
-			} else {
-				processInput("Shell to use: ")
-			}
-		}
+	if argsCount > 1 && args[1] == SetConfig {
+		config := processConfigInput(args)
 
-		if arg == CommandFiles {
-			if doesNextArgumentExistAndIsNotCommand("") {
-				// Get value
-			} else {
-				processInput("Paths to command files: ")
-			}
-		}
+		writeConfig(config)
 	}
 }
 
-func doesNextArgumentExistAndIsNotCommand(arg string) bool {
-	return false
+func doesNextArgumentExistAndIsNotCommand(args []string, index int) (bool, int) {
+	argsCount := len(args) - 1
+
+	if argsCount <= index {
+		return false, index
+	}
+
+	nextIndex := index + 1
+
+	if strings.HasPrefix(args[nextIndex], "--") {
+		return false, index
+	}
+
+	return true, nextIndex
 }
 
 func ensureCliSetup() bool {
