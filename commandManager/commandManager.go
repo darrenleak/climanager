@@ -80,11 +80,19 @@ func doesNextArgumentExistAndIsNotCommand(args []string, index int) (bool, int) 
 }
 
 func ensureCliSetup() bool {
+	_, configLoadError := loadConfig()
+
+	if configLoadError != nil {
+		fmt.Println("Error ensuring cli is setup")
+		return false
+	}
+
 	return true
 }
 
-func processInput(title string) string {
-	fmt.Println(title)
+func readUserInput(userPrompt string) string {
+	// Displays the prompt to the user
+	fmt.Println(userPrompt)
 
 	reader := bufio.NewReader(os.Stdin)
 	line, err := reader.ReadString('\n')

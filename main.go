@@ -64,6 +64,8 @@ func main() {
 
 	commandManager.ParseArgs(args)
 
+	fmt.Println(actionToRun)
+
 	// // TODO: This action will come in from the cli
 	runAction(actionToRun)
 }
@@ -177,7 +179,7 @@ func runnableRoutine(runnable Runnable, feedbackChannel chan string) {
 }
 
 func runCommand(runnable Runnable, feedbackChannel chan string) {
-	command := exec.Command(shell, "-c", runnable.Command)
+	command := exec.Command("bash", "-c", runnable.Command)
 	out, err := command.CombinedOutput()
 
 	if err != nil {

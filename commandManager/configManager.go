@@ -10,9 +10,23 @@ import (
 	"strings"
 )
 
+type ConfigPartial struct {
+	ConfigSetting      string
+	ConfigSettingValue string
+}
+
 type Config struct {
 	Shell        string
 	CommandFiles []string
+}
+
+type ConfigInitQuestion struct {
+	Arg        string
+	UserPrompt string
+}
+
+type ConfigInitQuestions struct {
+	InitQuestions []ConfigInitQuestion
 }
 
 func loadConfig() (Config, error) {
@@ -42,14 +56,22 @@ func initConfig() {
 		fmt.Println("Config load error. Either no file exists or it failed to read")
 	}
 
-	initValues := []string{
+	questions := []ConfigInitQuestion{{
+		Shell,
 		"Shell(default is Bash):",
-		"Action files(file path separated by comma)",
+	},
+		{
+			CommandFiles,
+			"Action files(file path separated by comma)",
+		},
 	}
-	inputValues := []string{}
+	initValues := ConfigInitQuestions{
+		InitQuestions: questions,
+	}
+	inputValues := []ConfigPartial{}
 
-	for _, question := range initValues {
-		fmt.Println(question)
+	for _, question := range initValues.InitQuestions {
+		fmt.Println(question.UserPrompt)
 
 		reader := bufio.NewReader(os.Stdin)
 		line, err := reader.ReadString('\n')
@@ -58,7 +80,10 @@ func initConfig() {
 			log.Fatal(err)
 		}
 
-		inputValues = append(inputValues, line)
+		inputValues = append(inputValues, ConfigPartial{
+			ConfigSetting:      question.Arg,
+			ConfigSettingValue: line,
+		})
 	}
 
 	updateConfig := buildConfig(inputValues, config)
@@ -79,17 +104,20 @@ issues when you do something like:
 The above command will update the Shell value in the config, not the CommandFiles
 in the config
 */
-func buildConfig(initConfigSettings []string, providedConfig Config) Config {
+func buildConfig(initConfigSettings []ConfigPartial, providedConfig Config) Config {
 	config := providedConfig
 
-	for settingIndex, setting := range initConfigSettings {
-		if settingIndex == 0 {
-			config.Shell = setting
+	fmt.Println(config)
+	fmt.Println(initConfigSettings)
+
+	for _, setting := range initConfigSettings {
+		if setting.ConfigSetting == Shell {
+			config.Shell = setting.ConfigSettingValue
 			continue
 		}
 
-		if settingIndex == 1 {
-			config.CommandFiles = strings.Split(setting, ",")
+		if setting.ConfigSetting == CommandFiles {
+			config.CommandFiles = strings.Split(setting.ConfigSettingValue, ",")
 			continue
 		}
 	}
@@ -110,17 +138,21 @@ func processConfigInput(args []string) Config {
 		fmt.Println("Config load error. Either no file exists or it failed to read")
 	}
 
-	inputValues := []string{}
+	inputValues := []ConfigPartial{}
 
 	for argIndex, arg := range args {
 		if argIndex <= 1 {
 			continue
 		}
 
-		textHint := getTextHint(arg)
+		userPrompt := getTextHint(arg)
+		inputValue := getInputValue(args, argIndex, userPrompt)
 
-		inputValue := getInputValue(args, argIndex, textHint)
-		inputValues = append(inputValues, inputValue)
+		configPartial := ConfigPartial{
+			ConfigSetting:      arg,
+			ConfigSettingValue: inputValue,
+		}
+		inputValues = append(inputValues, configPartial)
 	}
 
 	return buildConfig(inputValues, config)
@@ -141,7 +173,7 @@ func getTextHint(arg string) string {
 func getInputValue(
 	args []string,
 	argIndex int,
-	textHint string,
+	userPrompt string,
 ) string {
 	isNextArgumentAValue, nextIndex := doesNextArgumentExistAndIsNotCommand(args, argIndex)
 
@@ -149,7 +181,7 @@ func getInputValue(
 		nextValue := args[nextIndex]
 		return nextValue
 	} else {
-		nextValue := processInput(textHint)
+		nextValue := readUserInput(userPrompt)
 		return nextValue
 	}
 }
