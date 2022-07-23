@@ -43,24 +43,37 @@ Basically like a lifecycle. This will allow custmizations
 in the future if they are needed. Maybe something will need to be
 injected or processed during the parsing?
 */
-func ParseArgs(args []string) {
-	if !ensureCliSetup() {
+
+/*
+This needs to parse commands, not run them. It should return the commands
+that the user entered in a way that the program can understand and something
+else needs to run the commands
+*/
+func ParseArgs(args []string, requireInit bool) bool {
+	argsCount := len(args)
+	isInitCommand := argsCount > 1 && args[1] == Init
+
+	if requireInit && !isInitCommand {
 		fmt.Println("Please run: CLIManager --init, to setup CLIManager")
-		return
+		return true
 	}
 
-	argsCount := len(args)
-
 	// If init is the first argument, ignore the rest
-	if argsCount > 1 && args[1] == Init {
+	if isInitCommand {
 		initConfig()
+
+		return true
 	}
 
 	if argsCount > 1 && args[1] == SetConfig {
 		config := processConfigInput(args)
 
 		writeConfig(config)
+
+		return true
 	}
+
+	return false
 }
 
 func doesNextArgumentExistAndIsNotCommand(args []string, index int) (bool, int) {
@@ -79,15 +92,14 @@ func doesNextArgumentExistAndIsNotCommand(args []string, index int) (bool, int) 
 	return true, nextIndex
 }
 
-func ensureCliSetup() bool {
-	_, configLoadError := loadConfig()
+func RequireCliSetup() (bool, Config) {
+	config, configLoadError := LoadConfig()
 
 	if configLoadError != nil {
-		fmt.Println("Error ensuring cli is setup")
-		return false
+		return true, Config{}
 	}
 
-	return true
+	return false, config
 }
 
 func readUserInput(userPrompt string) string {

@@ -14,7 +14,6 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"sync"
 
 	"gopkg.in/yaml.v2"
@@ -56,17 +55,21 @@ var allRunnables = make(map[string]map[string]Runnable)
 var channels = make(map[string]chan string)
 var shell string
 var profilePath string
+var config commandManager.Config
 
 func main() {
 	args := os.Args
+	requireInit, loadedConfig := commandManager.RequireCliSetup()
+	hasActioned := commandManager.ParseArgs(args, requireInit)
+
+	if hasActioned {
+		return
+	}
+
+	config = loadedConfig
 	actionToRun := os.Args[1]
-	allRunnables = setupCommands([]string{"/Users/darren/Developer/Projects/CLIManager/test.yml"})
+	allRunnables = setupCommands(config.CommandFiles)
 
-	commandManager.ParseArgs(args)
-
-	fmt.Println(actionToRun)
-
-	// // TODO: This action will come in from the cli
 	runAction(actionToRun)
 }
 
@@ -77,8 +80,7 @@ func setupCommands(filePaths []string) map[string]map[string]Runnable {
 	var runnablesStatuses = make(map[string]map[string]Runnable)
 
 	for _, filePath := range filePaths {
-		filename, _ := filepath.Abs(filePath)
-		yamlFile, err := ioutil.ReadFile(filename)
+		yamlFile, err := ioutil.ReadFile(filePath)
 
 		if err != nil {
 			panic(err)
@@ -178,8 +180,9 @@ func runnableRoutine(runnable Runnable, feedbackChannel chan string) {
 	}
 }
 
+// TODO: Source the users profile. Require them to add it during config
 func runCommand(runnable Runnable, feedbackChannel chan string) {
-	command := exec.Command("bash", "-c", runnable.Command)
+	command := exec.Command(config.Shell, "-c", runnable.Command)
 	out, err := command.CombinedOutput()
 
 	if err != nil {

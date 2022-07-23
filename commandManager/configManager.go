@@ -29,7 +29,7 @@ type ConfigInitQuestions struct {
 	InitQuestions []ConfigInitQuestion
 }
 
-func loadConfig() (Config, error) {
+func LoadConfig() (Config, error) {
 	jsonFile, fileOpenError := os.Open("./config.json")
 
 	if fileOpenError != nil {
@@ -49,12 +49,7 @@ func loadConfig() (Config, error) {
 }
 
 func initConfig() {
-	config, configLoadError := loadConfig()
-
-	if configLoadError != nil {
-		// TODO: Handle this better
-		fmt.Println("Config load error. Either no file exists or it failed to read")
-	}
+	config, _ := LoadConfig()
 
 	questions := []ConfigInitQuestion{{
 		Shell,
@@ -133,7 +128,7 @@ func writeConfig(config Config) {
 }
 
 func processConfigInput(args []string) Config {
-	config, configLoadError := loadConfig()
+	config, configLoadError := LoadConfig()
 
 	if configLoadError != nil {
 		// TODO: Handle this better
