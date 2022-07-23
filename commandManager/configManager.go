@@ -111,13 +111,15 @@ func buildConfig(initConfigSettings []ConfigPartial, providedConfig Config) Conf
 	fmt.Println(initConfigSettings)
 
 	for _, setting := range initConfigSettings {
+		removedNewLineConfigSettingValue := strings.TrimSuffix(setting.ConfigSettingValue, "\n")
+
 		if setting.ConfigSetting == Shell {
-			config.Shell = setting.ConfigSettingValue
+			config.Shell = removedNewLineConfigSettingValue
 			continue
 		}
 
 		if setting.ConfigSetting == CommandFiles {
-			config.CommandFiles = strings.Split(setting.ConfigSettingValue, ",")
+			config.CommandFiles = strings.Split(removedNewLineConfigSettingValue, ",")
 			continue
 		}
 	}
