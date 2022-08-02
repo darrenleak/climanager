@@ -23,8 +23,16 @@ const (
 	CommandFiles       string = "--commandFiles"
 	CommandFilesAppend string = "--commandFilesAppend"
 	CommandFilesRemove string = "--commandFilesRemove"
+	ListCommands       string = "--listCommands"
 	SetConfig          string = "--config"
 	ViewConfig         string = "--viewConfig"
+)
+
+type CommandType string
+
+const (
+	Command CommandType = "command"
+	Value   CommandType = "value"
 )
 
 type ParsedCommand struct {
@@ -32,8 +40,67 @@ type ParsedCommand struct {
 	Value   string
 }
 
-type ParsedCommands struct {
-	actions []ParsedCommand
+type ParsedCommands []ParsedCommand
+
+// This will replace `ParsedArgs`
+func Parser(args []string) ParsedCommands {
+	argsCount := len(args)
+
+	if argsCount < 1 {
+		return ParsedCommands{}
+	}
+
+	stack := ParsedCommands{}
+	current := ParsedCommand{}
+
+	for index, arg := range args {
+		if index == 0 {
+			continue
+		}
+
+		isArgCommand := func(argToCheck string) bool {
+			return strings.HasPrefix(argToCheck, "--")
+		}
+
+		if isArgCommand(arg) {
+			current.Command = arg
+
+			nextIndex := index + 1
+			nextArgExists := nextIndex <= argsCount-1
+
+			if !nextArgExists {
+				stack = append(stack, current)
+				current = ParsedCommand{}
+				break
+			}
+
+			nextArg := args[nextIndex]
+
+			if isArgCommand(nextArg) {
+				stack = append(stack, current)
+				current = ParsedCommand{}
+			}
+		} else {
+			current.Value = arg
+			stack = append(stack, current)
+			current = ParsedCommand{}
+		}
+	}
+
+	return stack
+}
+
+func InterpretCommands(parsedCommands ParsedCommands) {
+	for _, command := range parsedCommands {
+		commandExists := len(command.Command) > 0
+		valueExists := len(command.Value) > 0
+
+		if commandExists && !valueExists {
+			fmt.Println("Command Exists")
+		} else if commandExists && valueExists {
+			fmt.Println("Command + Value Exists")
+		}
+	}
 }
 
 /*
@@ -53,6 +120,10 @@ func ParseArgs(args []string, requireInit bool) bool {
 	argsCount := len(args)
 	isInitCommand := argsCount > 1 && args[1] == Init
 
+	if argsCount < 1 {
+		return false
+	}
+
 	if requireInit && !isInitCommand {
 		fmt.Println("Please run: CLIManager --init, to setup CLIManager")
 		return true
@@ -67,7 +138,6 @@ func ParseArgs(args []string, requireInit bool) bool {
 
 	if argsCount > 1 && args[1] == SetConfig {
 		config := processConfigInput(args)
-
 		writeConfig(config)
 
 		return true

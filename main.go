@@ -62,15 +62,19 @@ func main() {
 	requireInit, loadedConfig := commandManager.RequireCliSetup()
 	hasActioned := commandManager.ParseArgs(args, requireInit)
 
+	// TODO: Test code
+	parsedCommands := commandManager.Parser(args)
+	commandManager.InterpretCommands(parsedCommands)
+
 	if hasActioned {
 		return
 	}
 
 	config = loadedConfig
-	actionToRun := os.Args[1]
+	// actionToRun := os.Args[1]
 	allRunnables = setupCommands(config.CommandFiles)
 
-	runAction(actionToRun)
+	// runAction(actionToRun)
 }
 
 var dependentsMap = make(map[string][]string)
