@@ -68,22 +68,23 @@ func runAction(action map[string]Runnable) []string {
 		runnable := action[runnableName]
 		dependencies := runnable.DependsOn
 
-		if len(dependencies) > 0 {
-			for _, dependency := range dependencies {
-				if dependencyMap[dependency] == nil {
-					dependencyMap[dependency] = []string{}
-				}
-
-				dependencyMap[dependency] = append(dependencyMap[dependency], runnableName)
-
-				if runnableDependencies[runnableName] == nil {
-					runnableDependencies[runnableName] = []string{}
-				}
-
-				runnableDependencies[runnableName] = append(runnableDependencies[runnableName], dependency)
-			}
-		} else {
+		if len(dependencies) == 0 {
 			immediatelyRunnable = append(immediatelyRunnable, runnableName)
+			continue
+		}
+
+		for _, dependency := range dependencies {
+			if dependencyMap[dependency] == nil {
+				dependencyMap[dependency] = []string{}
+			}
+
+			dependencyMap[dependency] = append(dependencyMap[dependency], runnableName)
+
+			if runnableDependencies[runnableName] == nil {
+				runnableDependencies[runnableName] = []string{}
+			}
+
+			runnableDependencies[runnableName] = append(runnableDependencies[runnableName], dependency)
 		}
 	}
 
