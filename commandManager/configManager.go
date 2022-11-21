@@ -48,7 +48,7 @@ func LoadConfig() (Config, error) {
 	return config, nil
 }
 
-func initConfig() {
+func InitConfig() {
 	config, _ := LoadConfig()
 
 	questions := []ConfigInitQuestion{{
@@ -82,7 +82,7 @@ func initConfig() {
 	}
 
 	updateConfig := buildConfig(inputValues, config)
-	writeConfig(updateConfig)
+	WriteConfig(updateConfig)
 }
 
 /*
@@ -122,12 +122,12 @@ func buildConfig(initConfigSettings []ConfigPartial, providedConfig Config) Conf
 	return config
 }
 
-func writeConfig(config Config) {
+func WriteConfig(config Config) {
 	file, _ := json.MarshalIndent(config, "", " ")
 	_ = ioutil.WriteFile("./config.json", file, 0644)
 }
 
-func processConfigInput(args []string) Config {
+func ProcessConfigInput(args []string) Config {
 	config, configLoadError := LoadConfig()
 
 	if configLoadError != nil {
@@ -172,13 +172,13 @@ func getInputValue(
 	argIndex int,
 	userPrompt string,
 ) string {
-	isNextArgumentAValue, nextIndex := doesNextArgumentExistAndIsNotCommand(args, argIndex)
+	isNextArgumentAValue, nextIndex := DoesNextArgumentExistAndIsNotCommand(args, argIndex)
 
 	if isNextArgumentAValue {
 		nextValue := args[nextIndex]
 		return nextValue
 	} else {
-		nextValue := readUserInput(userPrompt)
+		nextValue := ReadUserInput(userPrompt)
 		return nextValue
 	}
 }

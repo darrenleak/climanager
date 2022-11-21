@@ -1,0 +1,132 @@
+package orchestrator
+
+import (
+	"sync"
+)
+
+// map[dependent][runnables that depend on dependent]
+var dependencyMap = make(map[string][]string)
+
+// map[runnable][list of dependencies]
+var runnableDependencies = make(map[string][]string)
+
+/*
+
+When a dependency is done, dependencyMap will remove that dependent and get all the dependents and remove the dependent
+from the runnableDependencies
+
+*/
+
+func run(actions map[string]map[string]Runnable) {
+	action := actions["setupStrapi"]
+	actionCompletedChannel := make(chan string)
+	makeRunnable := make(chan string)
+	defer close(actionCompletedChannel)
+	defer close(makeRunnable)
+
+	immediatelyRunnable := runAction(action)
+
+	var waitGroup sync.WaitGroup
+
+	for _, runnableName := range immediatelyRunnable {
+		runnable := action[runnableName]
+
+		waitGroup.Add(1)
+		go execute(runnable, actionCompletedChannel)
+	}
+
+	go func() {
+		for {
+			select {
+			case completedAction := <-actionCompletedChannel:
+				newlyRunnableCount := updateAsImmediatelyRunnable(completedAction, makeRunnable)
+				waitGroup.Add(newlyRunnableCount)
+				waitGroup.Done()
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			select {
+			case newRunnable := <-makeRunnable:
+				runnable := action[newRunnable]
+				go execute(runnable, actionCompletedChannel)
+			}
+		}
+	}()
+
+	waitGroup.Wait()
+}
+
+// Might need a channel
+// TODO:Cleanup
+func runAction(action map[string]Runnable) []string {
+	var immediatelyRunnable = []string{}
+
+	for runnableName := range action {
+		runnable := action[runnableName]
+		dependencies := runnable.DependsOn
+
+		if len(dependencies) > 0 {
+			for _, dependency := range dependencies {
+				if dependencyMap[dependency] == nil {
+					dependencyMap[dependency] = []string{}
+				}
+
+				dependencyMap[dependency] = append(dependencyMap[dependency], runnableName)
+
+				if runnableDependencies[runnableName] == nil {
+					runnableDependencies[runnableName] = []string{}
+				}
+
+				runnableDependencies[runnableName] = append(runnableDependencies[runnableName], dependency)
+			}
+		} else {
+			immediatelyRunnable = append(immediatelyRunnable, runnableName)
+		}
+	}
+
+	return immediatelyRunnable
+}
+
+func updateAsImmediatelyRunnable(runnableName string, makeRunnable chan string) int {
+	dependencies := dependencyMap[runnableName]
+	count := 0
+
+	// TODO:Cleanup
+	for _, dependency := range dependencies {
+		currentRunnableDependency := runnableDependencies[dependency]
+
+		for index := range currentRunnableDependency {
+			currentRunnableDependency[index] = currentRunnableDependency[len(currentRunnableDependency)-1]
+			runnableDependencies[dependency] = currentRunnableDependency[:len(currentRunnableDependency)-1]
+
+			if len(runnableDependencies[dependency]) == 0 {
+				count++
+				makeRunnable <- dependency
+			}
+		}
+	}
+
+	delete(dependencyMap, runnableName)
+
+	return count
+}
+
+func execute(runnable Runnable, actionCompleteChannel chan string) {
+	actionCompleteChannel <- runnable.Name
+
+	// command := exec.Command(config.Shell, "-c", runnable.Command)
+	// out, err := command.CombinedOutput()
+
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// 	fmt.Println(string(out))
+	// 	feedbackChannel <- runnable.Name //Blocking so never ends if you don't listen
+	// 	return
+	// }
+
+	// fmt.Println(string(out))
+	// feedbackChannel <- runnable.Name
+}

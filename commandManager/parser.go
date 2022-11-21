@@ -43,64 +43,46 @@ type ParsedCommand struct {
 type ParsedCommands []ParsedCommand
 
 // This will replace `ParsedArgs`
-func Parser(args []string) ParsedCommands {
+func Parse(args []string) ParsedCommands {
 	argsCount := len(args)
 
-	if argsCount < 1 {
-		return ParsedCommands{}
+	if argsCount == 0 {
+		return ParsedCommands{} // Maybe update to - os.exit()
 	}
 
 	stack := ParsedCommands{}
 	current := ParsedCommand{}
 
-	for index, arg := range args {
-		if index == 0 {
+	isArgCommand := func(argToCheck string) bool {
+		return strings.HasPrefix(argToCheck, "--")
+	}
+
+	for currentArgIndex, arg := range args {
+		if currentArgIndex == 0 {
 			continue
 		}
 
-		isArgCommand := func(argToCheck string) bool {
-			return strings.HasPrefix(argToCheck, "--")
-		}
-
-		if isArgCommand(arg) {
-			current.Command = arg
-
-			nextIndex := index + 1
-			nextArgExists := nextIndex <= argsCount-1
-
-			if !nextArgExists {
-				stack = append(stack, current)
-				current = ParsedCommand{}
-				break
-			}
-
-			nextArg := args[nextIndex]
-
-			if isArgCommand(nextArg) {
-				stack = append(stack, current)
-				current = ParsedCommand{}
-			}
-		} else {
+		if !isArgCommand(arg) {
 			current.Value = arg
 			stack = append(stack, current)
 			current = ParsedCommand{}
+
+			continue
+		}
+
+		current.Command = arg
+
+		currentArgCommandValueIndex := currentArgIndex + 1
+		nextArgIsValue := args[currentArgCommandValueIndex]
+
+		if isArgCommand(nextArgIsValue) {
+			stack = append(stack, current)
+			current = ParsedCommand{}
+			continue
 		}
 	}
 
 	return stack
-}
-
-func InterpretCommands(parsedCommands ParsedCommands) {
-	for _, command := range parsedCommands {
-		commandExists := len(command.Command) > 0
-		valueExists := len(command.Value) > 0
-
-		if commandExists && !valueExists {
-			fmt.Println("Command Exists")
-		} else if commandExists && valueExists {
-			fmt.Println("Command + Value Exists")
-		}
-	}
 }
 
 /*
@@ -131,14 +113,14 @@ func ParseArgs(args []string, requireInit bool) bool {
 
 	// If init is the first argument, ignore the rest
 	if isInitCommand {
-		initConfig()
+		InitConfig()
 
 		return true
 	}
 
 	if argsCount > 1 && args[1] == SetConfig {
-		config := processConfigInput(args)
-		writeConfig(config)
+		config := ProcessConfigInput(args)
+		WriteConfig(config)
 
 		return true
 	}
@@ -146,7 +128,7 @@ func ParseArgs(args []string, requireInit bool) bool {
 	return false
 }
 
-func doesNextArgumentExistAndIsNotCommand(args []string, index int) (bool, int) {
+func DoesNextArgumentExistAndIsNotCommand(args []string, index int) (bool, int) {
 	argsCount := len(args) - 1
 
 	if argsCount <= index {
@@ -172,7 +154,7 @@ func RequireCliSetup() (bool, Config) {
 	return false, config
 }
 
-func readUserInput(userPrompt string) string {
+func ReadUserInput(userPrompt string) string {
 	// Displays the prompt to the user
 	fmt.Println(userPrompt)
 
