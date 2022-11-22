@@ -75,7 +75,7 @@ func viewConfig() {
 		return
 	}
 
-	fmt.Println(string(prettyJSON.Bytes()))
+	fmt.Println(prettyJSON.String())
 }
 
 func listCommands() {
