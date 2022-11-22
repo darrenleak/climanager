@@ -10,6 +10,7 @@ TODO:
 
 import (
 	"CLIManager/commandManager"
+	"CLIManager/interpreter"
 	"CLIManager/orchestrator"
 	"os"
 )
@@ -54,8 +55,7 @@ func main() {
 	hasActioned := commandManager.ParseArgs(args, requireInit)
 
 	// TODO: Test code
-	// parsedCommands := commandManager.Parse(args)
-	// interpreter.InterpretCommands(parsedCommands, requireInit)
+	parsedCommands := commandManager.Parse(args)
 
 	if hasActioned {
 		return
@@ -64,7 +64,13 @@ func main() {
 	config = loadedConfig
 	// actionToRun := os.Args[1]
 	// allRunnables = setupCommands(config.CommandFiles)
-	orchestrator.BuildCommandTree(config)
+	commands := orchestrator.BuildCommandTree(config)
+	interpreter.InterpretCommands(
+		parsedCommands,
+		requireInit,
+		commands,
+		config,
+	)
 
 	// runAction(actionToRun)
 }

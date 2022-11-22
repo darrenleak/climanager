@@ -17,3 +17,5 @@
 config.json
 test.yml
 ./CLIManager
+
+./main

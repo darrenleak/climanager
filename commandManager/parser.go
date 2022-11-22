@@ -73,8 +73,12 @@ func Parse(args []string) ParsedCommands {
 		current.Command = arg
 
 		currentArgCommandValueIndex := currentArgIndex + 1
-		nextArgIsValue := args[currentArgCommandValueIndex]
+		if currentArgCommandValueIndex > argsCount-1 {
+			stack = append(stack, current)
+			continue
+		}
 
+		nextArgIsValue := args[currentArgCommandValueIndex]
 		if isArgCommand(nextArgIsValue) {
 			stack = append(stack, current)
 			current = ParsedCommand{}
