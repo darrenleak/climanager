@@ -163,31 +163,3 @@ func WriteConfig(config Config) {
 	file, _ := json.MarshalIndent(config, "", "  ")
 	_ = ioutil.WriteFile("./config.json", file, 0644)
 }
-
-func getTextHint(arg string) string {
-	if arg == Shell {
-		return "Shell to use: "
-	}
-
-	if arg == CommandFiles {
-		return "Paths to command files: "
-	}
-
-	return ""
-}
-
-func getInputValue(
-	args []string,
-	argIndex int,
-	userPrompt string,
-) string {
-	isNextArgumentAValue, nextIndex := DoesNextArgumentExistAndIsNotCommand(args, argIndex)
-
-	if isNextArgumentAValue {
-		nextValue := args[nextIndex]
-		return nextValue
-	} else {
-		nextValue := ReadUserInput(userPrompt)
-		return nextValue
-	}
-}
