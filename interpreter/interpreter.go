@@ -45,6 +45,8 @@ func interpretCommandWithValue(
 			commandFilesAppend(command.Value)
 		case commandManager.CommandFilesRemove:
 			commandFilesRemove(command.Value)
+		case commandManager.Shell:
+			updateShell(command.Value)
 		}
 
 		return
@@ -63,6 +65,9 @@ func interpretCommandWithoutValue(
 		case commandManager.CommandFilesRemove:
 			commandFile := commandManager.ReadUserInput("Command file to remove")
 			commandFilesRemove(commandFile)
+		case commandManager.Shell:
+			shell := commandManager.ReadUserInput("What shell are you using?")
+			updateShell(shell)
 		}
 
 		return
@@ -74,6 +79,10 @@ func interpretCommandWithoutValue(
 	case commandManager.ListCommands:
 		listCommands()
 	}
+}
+
+func updateShell(shell string) {
+	commandManager.Updateshell(currentConfig, shell)
 }
 
 func commandFilesAppend(commandFilePath string) {

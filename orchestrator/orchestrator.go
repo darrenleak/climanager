@@ -46,7 +46,11 @@ func BuildCommandTree(
 
 	actionFilePaths := config.CommandFiles
 	for _, path := range actionFilePaths {
-		commandTree := setupCommands(path)
+		commandTree, err := setupCommands(path)
+		if err != nil {
+			continue
+		}
+
 		commands = append(commands, commandTree)
 	}
 
@@ -55,13 +59,13 @@ func BuildCommandTree(
 
 var dependentsMap = make(map[string][]string)
 
-func setupCommands(filePath string) map[string]map[string]Runnable {
+func setupCommands(filePath string) (map[string]map[string]Runnable, error) {
 	var runnablesStatuses = make(map[string]map[string]Runnable)
 
 	yamlFile, err := ioutil.ReadFile(filePath)
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	actions := Actions{}
@@ -86,5 +90,5 @@ func setupCommands(filePath string) map[string]map[string]Runnable {
 		}
 	}
 
-	return runnablesStatuses
+	return runnablesStatuses, nil
 }

@@ -125,6 +125,12 @@ func buildConfig(initConfigSettings []ConfigPartial, providedConfig Config) Conf
 // Multiple places are writing to the config with different ways of
 // doing it
 func AppendCommandFilePath(config Config, commandFilePath string) {
+	_, err := ioutil.ReadFile(commandFilePath)
+	if err != nil {
+		fmt.Println("Error reading command file: ", commandFilePath)
+		return
+	}
+
 	config.CommandFiles = append(config.CommandFiles, commandFilePath)
 	WriteConfig(config)
 }
@@ -144,8 +150,17 @@ func RemoveCommandFilePath(config Config, commandFilePath string) {
 	WriteConfig(config)
 }
 
+func Updateshell(config Config, shell string) {
+	if len(shell) == 0 || shell == "\n" {
+		shell = "bash"
+	}
+
+	config.Shell = strings.TrimSuffix(shell, "\n")
+	WriteConfig(config)
+}
+
 func WriteConfig(config Config) {
-	file, _ := json.MarshalIndent(config, "", " ")
+	file, _ := json.MarshalIndent(config, "", "  ")
 	_ = ioutil.WriteFile("./config.json", file, 0644)
 }
 
