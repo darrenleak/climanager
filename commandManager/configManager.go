@@ -51,10 +51,11 @@ func LoadConfig() (Config, error) {
 func InitConfig() {
 	config, _ := LoadConfig()
 
-	questions := []ConfigInitQuestion{{
-		Shell,
-		"Shell(default is Bash):",
-	},
+	questions := []ConfigInitQuestion{
+		{
+			Shell,
+			"Shell(default is Bash):",
+		},
 		{
 			CommandFiles,
 			"Action files(file path separated by comma)",
@@ -102,9 +103,6 @@ in the config
 func buildConfig(initConfigSettings []ConfigPartial, providedConfig Config) Config {
 	config := providedConfig
 
-	fmt.Println(config)
-	fmt.Println(initConfigSettings)
-
 	for _, setting := range initConfigSettings {
 		removedNewLineConfigSettingValue := strings.TrimSuffix(setting.ConfigSettingValue, "\n")
 
@@ -120,6 +118,30 @@ func buildConfig(initConfigSettings []ConfigPartial, providedConfig Config) Conf
 	}
 
 	return config
+}
+
+// TODO: Write command files alphabetically
+// TODO: Try to improve how the config file gets written to
+// Multiple places are writing to the config with different ways of
+// doing it
+func AppendCommandFilePath(config Config, commandFilePath string) {
+	config.CommandFiles = append(config.CommandFiles, commandFilePath)
+	WriteConfig(config)
+}
+
+func RemoveCommandFilePath(config Config, commandFilePath string) {
+	commandFiles := config.CommandFiles
+	newCommandFiles := []string{}
+
+	for index := range commandFiles {
+		if commandFiles[index] != commandFilePath {
+			newCommandFiles = append(newCommandFiles, commandFiles[index])
+		}
+	}
+
+	config.CommandFiles = newCommandFiles
+
+	WriteConfig(config)
 }
 
 func WriteConfig(config Config) {

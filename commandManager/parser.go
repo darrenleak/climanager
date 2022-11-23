@@ -24,8 +24,8 @@ const (
 	CommandFilesAppend string = "--commandFilesAppend"
 	CommandFilesRemove string = "--commandFilesRemove"
 	ListCommands       string = "--listCommands"
-	SetConfig          string = "--config"
-	ViewConfig         string = "--viewConfig"
+	// SetConfig          string = "--config"
+	ViewConfig string = "--viewConfig"
 )
 
 type CommandType string
@@ -122,12 +122,12 @@ func ParseArgs(args []string, requireInit bool) bool {
 		return true
 	}
 
-	if argsCount > 1 && args[1] == SetConfig {
-		config := ProcessConfigInput(args)
-		WriteConfig(config)
+	// if argsCount > 1 && args[1] == SetConfig {
+	// 	config := ProcessConfigInput(args)
+	// 	WriteConfig(config)
 
-		return true
-	}
+	// 	return true
+	// }
 
 	return false
 }

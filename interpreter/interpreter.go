@@ -39,7 +39,16 @@ func InterpretCommands(
 func interpretCommandWithValue(
 	command commandManager.ParsedCommand,
 ) {
-	fmt.Println("Process Command With Value: ", command)
+	if commandRequiresInput(command) {
+		switch command.Command {
+		case commandManager.CommandFilesAppend:
+			commandFilesAppend(command.Value)
+		case commandManager.CommandFilesRemove:
+			commandFilesRemove(command.Value)
+		}
+
+		return
+	}
 }
 
 // If only the command exists but requires input
@@ -47,8 +56,15 @@ func interpretCommandWithoutValue(
 	command commandManager.ParsedCommand,
 ) {
 	if commandRequiresInput(command) {
-		// Run command
-		fmt.Println("COMMAND REQUIRES INPUT: ", command)
+		switch command.Command {
+		case commandManager.CommandFilesAppend:
+			commandFile := commandManager.ReadUserInput("Command file to append")
+			commandFilesAppend(commandFile)
+		case commandManager.CommandFilesRemove:
+			commandFile := commandManager.ReadUserInput("Command file to remove")
+			commandFilesRemove(commandFile)
+		}
+
 		return
 	}
 
@@ -58,7 +74,14 @@ func interpretCommandWithoutValue(
 	case commandManager.ListCommands:
 		listCommands()
 	}
-	// fmt.Println("COMMAND DOES NOT REQUIRE INPUT: ", command)
+}
+
+func commandFilesAppend(commandFilePath string) {
+	commandManager.AppendCommandFilePath(currentConfig, commandFilePath)
+}
+
+func commandFilesRemove(commandFilePath string) {
+	commandManager.RemoveCommandFilePath(currentConfig, commandFilePath)
 }
 
 func viewConfig() {
