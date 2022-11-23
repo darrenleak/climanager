@@ -18,3 +18,18 @@ actions:
           - "hello"
         command: "echo world"
 ```
+
+# How to setup CLIManager
+## Building CLIManager
+1. First step, clone this repo. 
+2. Build the project. This should be as simple as:
+```
+go build -o CLIManager
+```
+3. Create an actions yml file. You can use the example provided above.
+4. Once the project is built, run the following:
+```
+./CLIManager --init
+```
+4.1 For shell, I specify `zsh`
+4.2 The action files, you need to specify the absolute path to your action files
