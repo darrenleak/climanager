@@ -164,34 +164,6 @@ func WriteConfig(config Config) {
 	_ = ioutil.WriteFile("./config.json", file, 0644)
 }
 
-func ProcessConfigInput(args []string) Config {
-	config, configLoadError := LoadConfig()
-
-	if configLoadError != nil {
-		// TODO: Handle this better
-		fmt.Println("Config load error. Either no file exists or it failed to read")
-	}
-
-	inputValues := []ConfigPartial{}
-
-	for argIndex, arg := range args {
-		if argIndex <= 1 {
-			continue
-		}
-
-		userPrompt := getTextHint(arg)
-		inputValue := getInputValue(args, argIndex, userPrompt)
-
-		configPartial := ConfigPartial{
-			ConfigSetting:      arg,
-			ConfigSettingValue: inputValue,
-		}
-		inputValues = append(inputValues, configPartial)
-	}
-
-	return buildConfig(inputValues, config)
-}
-
 func getTextHint(arg string) string {
 	if arg == Shell {
 		return "Shell to use: "
