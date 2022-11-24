@@ -1,6 +1,7 @@
 package orchestrator
 
 import (
+	"CLIManager/commandManager"
 	"fmt"
 	"os/exec"
 	"sync"
@@ -12,6 +13,8 @@ var dependencyMap = make(map[string][]string)
 // map[runnable][list of dependencies]
 var runnableDependencies = make(map[string][]string)
 
+var currentConfig commandManager.Config
+
 /*
 
 When a dependency is done, dependencyMap will remove that dependent and get all the dependents and remove the dependent
@@ -19,7 +22,8 @@ from the runnableDependencies
 
 */
 
-func Run(actionToRun string, actions map[string]map[string]Runnable) {
+func Run(config commandManager.Config, actionToRun string, actions map[string]map[string]Runnable) {
+	currentConfig = config
 	action := actions[actionToRun]
 	actionCompletedChannel := make(chan string)
 	makeRunnable := make(chan string)
@@ -117,7 +121,7 @@ func updateAsImmediatelyRunnable(runnableName string, makeRunnable chan string) 
 }
 
 func execute(runnable Runnable, actionCompleteChannel chan string) {
-	command := exec.Command("zsh", "-c", runnable.Command)
+	command := exec.Command(currentConfig.Shell, "-c", runnable.Command)
 	out, err := command.CombinedOutput()
 
 	if err != nil {
