@@ -1,6 +1,8 @@
 package orchestrator
 
 import (
+	"fmt"
+	"os/exec"
 	"sync"
 )
 
@@ -17,15 +19,14 @@ from the runnableDependencies
 
 */
 
-func run(actions map[string]map[string]Runnable) {
-	action := actions["setupStrapi"]
+func Run(actionToRun string, actions map[string]map[string]Runnable) {
+	action := actions[actionToRun]
 	actionCompletedChannel := make(chan string)
 	makeRunnable := make(chan string)
 	defer close(actionCompletedChannel)
 	defer close(makeRunnable)
 
 	immediatelyRunnable := runAction(action)
-
 	var waitGroup sync.WaitGroup
 
 	for _, runnableName := range immediatelyRunnable {
@@ -116,18 +117,16 @@ func updateAsImmediatelyRunnable(runnableName string, makeRunnable chan string) 
 }
 
 func execute(runnable Runnable, actionCompleteChannel chan string) {
+	command := exec.Command("zsh", "-c", runnable.Command)
+	out, err := command.CombinedOutput()
+
+	if err != nil {
+		fmt.Println(err.Error())
+		fmt.Println(string(out))
+		actionCompleteChannel <- runnable.Name
+		return
+	}
+
+	fmt.Println(string(out))
 	actionCompleteChannel <- runnable.Name
-
-	// command := exec.Command(config.Shell, "-c", runnable.Command)
-	// out, err := command.CombinedOutput()
-
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// 	fmt.Println(string(out))
-	// 	feedbackChannel <- runnable.Name //Blocking so never ends if you don't listen
-	// 	return
-	// }
-
-	// fmt.Println(string(out))
-	// feedbackChannel <- runnable.Name
 }

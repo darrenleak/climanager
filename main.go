@@ -62,7 +62,6 @@ func main() {
 	}
 
 	config = loadedConfig
-	// actionToRun := os.Args[1]
 	// allRunnables = setupCommands(config.CommandFiles)
 	commands := orchestrator.BuildCommandTree(config)
 	interpreter.InterpretCommands(

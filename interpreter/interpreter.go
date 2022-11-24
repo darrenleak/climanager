@@ -32,6 +32,9 @@ func InterpretCommands(
 			interpretCommandWithoutValue(command)
 		} else if commandExists && valueExists {
 			interpretCommandWithValue(command)
+		} else if !commandExists {
+			// TODO: This is not great, as this is acting like a value, but it is a command
+			orchestrator.Run(command.Value, allCommands[0])
 		}
 	}
 }

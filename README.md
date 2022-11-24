@@ -13,9 +13,11 @@ actions:
     runnables:
       - name: "hello" # Names cannot have spaces
         command: "echo hello"
+      - name: "helloOne" # Names cannot have spaces
+        command: "echo helloOne"
       - name: "world" # Names cannot have spaces
         dependsOn:
-          - "hello"
+          - "helloOne"
         command: "echo world"
 ```
 
@@ -32,4 +34,13 @@ go build -o CLIManager
 ./CLIManager --init
 ```
 4.1 For shell, I specify `zsh`
+
 4.2 The action files, you need to specify the absolute path to your action files
+
+# Using CLIManager
+Once you have built CLIManager you can do the following:
+```
+./CLIMananger helloWorld
+```
+
+The `helloWorld` argument is the `action` name from the yml file example above. When you add new actions, you would use that action's name instead.

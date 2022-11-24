@@ -63,7 +63,6 @@ func setupCommands(filePath string) (map[string]map[string]Runnable, error) {
 	var runnablesStatuses = make(map[string]map[string]Runnable)
 
 	yamlFile, err := ioutil.ReadFile(filePath)
-
 	if err != nil {
 		return nil, err
 	}
