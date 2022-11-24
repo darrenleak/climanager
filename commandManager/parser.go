@@ -20,6 +20,7 @@ commandFiles with the new value.
 const (
 	Init               string = "--init"
 	Shell              string = "--shell"
+	Profile            string = "--profile"
 	CommandFiles       string = "--commandFiles"
 	CommandFilesAppend string = "--commandFilesAppend"
 	CommandFilesRemove string = "--commandFilesRemove"

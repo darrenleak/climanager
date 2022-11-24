@@ -17,6 +17,7 @@ type ConfigPartial struct {
 
 type Config struct {
 	Shell        string
+	Profile      string
 	CommandFiles []string
 }
 
@@ -57,8 +58,12 @@ func InitConfig() {
 			"Shell(default is Bash):",
 		},
 		{
+			Profile,
+			"zsh/bash profile(Absolute path):",
+		},
+		{
 			CommandFiles,
-			"Action files(file path separated by comma)",
+			"Action files(Absolute path)",
 		},
 	}
 	initValues := ConfigInitQuestions{
@@ -108,6 +113,11 @@ func buildConfig(initConfigSettings []ConfigPartial, providedConfig Config) Conf
 
 		if setting.ConfigSetting == Shell {
 			config.Shell = removedNewLineConfigSettingValue
+			continue
+		}
+
+		if setting.ConfigSetting == Profile {
+			config.Profile = removedNewLineConfigSettingValue
 			continue
 		}
 
