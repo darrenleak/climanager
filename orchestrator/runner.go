@@ -121,7 +121,8 @@ func updateAsImmediatelyRunnable(runnableName string, makeRunnable chan string) 
 }
 
 func execute(runnable Runnable, actionCompleteChannel chan string) {
-	command := exec.Command(currentConfig.Shell, "-c", runnable.Command)
+	sourcedCommand := fmt.Sprintf("%s;%s", currentConfig.Profile, runnable.Command)
+	command := exec.Command(currentConfig.Shell, "-c", sourcedCommand)
 	out, err := command.CombinedOutput()
 
 	if err != nil {
