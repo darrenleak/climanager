@@ -26,6 +26,7 @@ const (
 	CommandFilesRemove string = "--commandFilesRemove"
 	ListCommands       string = "--listCommands"
 	ViewConfig         string = "--viewConfig"
+	Help               string = "--help"
 )
 
 type CommandType string

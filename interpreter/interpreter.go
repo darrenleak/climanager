@@ -21,6 +21,11 @@ func InterpretCommands(
 	allCommands []map[string]map[string]orchestrator.Runnable,
 	config commandManager.Config,
 ) {
+	if parsedCommands[0].Command == commandManager.Help {
+		printHelp()
+		return
+	}
+
 	parsedActions = allCommands
 	currentConfig = config
 
@@ -137,4 +142,16 @@ func commandRequiresInput(
 	}
 
 	return !slices.Contains(commandsRequiringInput, command.Command)
+}
+
+func printHelp() {
+	fmt.Println(commandManager.Init, "               Setup the config file by asking a few questions")
+	fmt.Println(commandManager.Shell, "              Allow you to update the shell setting in the config")
+	fmt.Println(commandManager.Profile, "            Allow you to update the profile setting in the config")
+	fmt.Println(commandManager.CommandFiles, "       Allow you to update the command files in the config")
+	fmt.Println(commandManager.CommandFilesAppend, " Allow you to append to the command files in the config")
+	fmt.Println(commandManager.CommandFilesRemove, " Allow you to remove from the command files in the config")
+	fmt.Println(commandManager.ListCommands, "       List all the actions")
+	fmt.Println(commandManager.ViewConfig, "         Print out the current config file")
+	fmt.Println(commandManager.Help, "               Shows help, what you are seeing now :)")
 }
