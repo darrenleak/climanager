@@ -81,6 +81,13 @@ func InitConfig() {
 			log.Fatal(err)
 		}
 
+		line = strings.TrimSuffix(line, "\n")
+
+		if len(line) == 0 {
+			fmt.Println("Value is required for: ", question.Arg)
+			return
+		}
+
 		inputValues = append(inputValues, ConfigPartial{
 			ConfigSetting:      question.Arg,
 			ConfigSettingValue: line,
@@ -166,6 +173,15 @@ func Updateshell(config Config, shell string) {
 	}
 
 	config.Shell = strings.TrimSuffix(shell, "\n")
+	WriteConfig(config)
+}
+
+func UpdateProfile(config Config, profilePath string) {
+	if len(profilePath) == 0 || profilePath == "\n" {
+		return
+	}
+
+	config.Profile = strings.TrimSuffix(profilePath, "\n")
 	WriteConfig(config)
 }
 

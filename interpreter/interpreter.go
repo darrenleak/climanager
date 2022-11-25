@@ -68,14 +68,17 @@ func interpretCommandWithoutValue(
 	if commandRequiresInput(command) {
 		switch command.Command {
 		case commandManager.CommandFilesAppend:
-			commandFile := commandManager.ReadUserInput("Command file to append")
+			commandFile := commandManager.ReadUserInput("Command file path(absolute path) to append")
 			commandFilesAppend(commandFile)
 		case commandManager.CommandFilesRemove:
-			commandFile := commandManager.ReadUserInput("Command file to remove")
+			commandFile := commandManager.ReadUserInput("Command file path(absolute path) to remove")
 			commandFilesRemove(commandFile)
 		case commandManager.Shell:
 			shell := commandManager.ReadUserInput("What shell are you using?")
 			updateShell(shell)
+		case commandManager.Profile:
+			profilePath := commandManager.ReadUserInput("Absolute path to profile file(zsh, bash, etc)")
+			updateProfile(profilePath)
 		}
 
 		return
@@ -91,6 +94,10 @@ func interpretCommandWithoutValue(
 
 func updateShell(shell string) {
 	commandManager.Updateshell(currentConfig, shell)
+}
+
+func updateProfile(profilePath string) {
+	commandManager.UpdateProfile(currentConfig, profilePath)
 }
 
 func commandFilesAppend(commandFilePath string) {
