@@ -1,6 +1,7 @@
 package cliHttp
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -24,10 +25,27 @@ func DownloadFile(urlString string) (*string, error) {
 	path := fileURL.Path
 	urlSegments := strings.Split(path, "/")
 	outputFileName := urlSegments[len(urlSegments)-1]
-	outputFilePath := fmt.Sprintf("%s%s", "~/.climanager/", outputFileName)
 
-	response, err := http.Get(path)
+	userHomeDirectory, err := os.UserHomeDir()
 	if err != nil {
+		fmt.Println("Home directory issue: ", err)
+		return nil, err
+	}
+
+	outputFilePathDirectory := fmt.Sprintf("%s%s", userHomeDirectory, "/.climanager/")
+	outputFilePath := fmt.Sprintf("%s%s", outputFilePathDirectory, outputFileName)
+
+	if _, err := os.Stat(outputFilePathDirectory); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(outputFilePathDirectory, os.ModePerm)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+	}
+
+	response, err := http.Get(urlString)
+	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	defer response.Body.Close()

@@ -153,7 +153,7 @@ func buildConfig(initConfigSettings []ConfigPartial, providedConfig Config) Conf
 }
 
 func downloadCommandFiles(commandFiles []string) map[string]string {
-	var downloadedFiles map[string]string
+	downloadedFiles := map[string]string{}
 
 	for _, commandFile := range commandFiles {
 		if cliHttp.IsCommandFileURL(commandFile) {
@@ -163,6 +163,7 @@ func downloadCommandFiles(commandFiles []string) map[string]string {
 		fileName, err := cliHttp.DownloadFile(commandFile)
 		if err != nil {
 			fmt.Println("Could not download command file: ", commandFile)
+			return nil
 		}
 
 		downloadedFiles[commandFile] = *fileName
