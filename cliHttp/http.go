@@ -14,11 +14,11 @@ func IsCommandFileURL(commandFilePath string) bool {
 	return !(err == nil)
 }
 
-func DownloadFile(urlString string) (bool, error) {
+func DownloadFile(urlString string) (*string, error) {
 	fileURL, err := url.Parse(urlString)
 	if err != nil {
 		fmt.Println("Cannot download file: ", urlString)
-		return false, err
+		return nil, err
 	}
 
 	path := fileURL.Path
@@ -28,22 +28,22 @@ func DownloadFile(urlString string) (bool, error) {
 
 	response, err := http.Get(path)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 	defer response.Body.Close()
 
 	fileHandle, err := os.OpenFile(outputFilePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
 	if err != nil {
 		fmt.Println("Error opening file: ", err)
-		return false, err
+		return nil, err
 	}
 	defer fileHandle.Close()
 
 	_, err = io.Copy(fileHandle, response.Body)
 	if err != nil {
 		fmt.Println("Could not write to file: ", outputFilePath)
-		return false, err
+		return nil, err
 	}
 
-	return true, nil
+	return &outputFilePath, nil
 }

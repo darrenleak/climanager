@@ -1,6 +1,7 @@
 package commandManager
 
 import (
+	"CLIManager/cliHttp"
 	"bufio"
 	"encoding/json"
 	"fmt"
@@ -16,9 +17,10 @@ type ConfigPartial struct {
 }
 
 type Config struct {
-	Shell        string
-	Profile      string
-	CommandFiles []string
+	Shell            string
+	Profile          string
+	CommandFiles     []string
+	CommandFilesUrls map[string]string
 }
 
 type ConfigInitQuestion struct {
@@ -95,6 +97,7 @@ func InitConfig() {
 	}
 
 	updateConfig := buildConfig(inputValues, config)
+
 	WriteConfig(updateConfig)
 }
 
@@ -130,11 +133,42 @@ func buildConfig(initConfigSettings []ConfigPartial, providedConfig Config) Conf
 
 		if setting.ConfigSetting == CommandFiles {
 			config.CommandFiles = strings.Split(removedNewLineConfigSettingValue, ",")
+			downloadFileMap := downloadCommandFiles(config.CommandFiles)
+			config.CommandFilesUrls = downloadFileMap
+
 			continue
 		}
 	}
 
+	// Replace config.CommandFiles with file paths of downloaded files
+	for commandFileURL := range config.CommandFilesUrls {
+		for index, commandFile := range config.CommandFiles {
+			if commandFile == commandFileURL {
+				config.CommandFiles[index] = config.CommandFilesUrls[commandFileURL]
+			}
+		}
+	}
+
 	return config
+}
+
+func downloadCommandFiles(commandFiles []string) map[string]string {
+	var downloadedFiles map[string]string
+
+	for _, commandFile := range commandFiles {
+		if cliHttp.IsCommandFileURL(commandFile) {
+			continue
+		}
+
+		fileName, err := cliHttp.DownloadFile(commandFile)
+		if err != nil {
+			fmt.Println("Could not download command file: ", commandFile)
+		}
+
+		downloadedFiles[commandFile] = *fileName
+	}
+
+	return downloadedFiles
 }
 
 // TODO: Write command files alphabetically
