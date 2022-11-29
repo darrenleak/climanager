@@ -1,9 +1,9 @@
-# CLIManager
+# bluff
 
 ## What and Why
-I started building CLIManager because it seemed like every company I have worked at needed a cli tool that would help them onboard people or just to get people setup quickly, or maybe they needed a bunch of other commands that needed to be orchestrated.
+I started building bluff because it seemed like every company I have worked at needed a cli tool that would help them onboard people or just to get people setup quickly, or maybe they needed a bunch of other commands that needed to be orchestrated.
 
-CLIManager tries to solve this(at a very high level at the moment) by allowing anyone to create a yml file with predefined `actions`. These actions allow one to create/orchestrate commands. These commands are called `runnables` and a `runnable` has a `name`, the `command` to execute and `dependencies`. The `dependencies` will run before the runnable's command. 
+bluff tries to solve this(at a very high level at the moment) by allowing anyone to create a yml file with predefined `actions`. These actions allow one to create/orchestrate commands. These commands are called `runnables` and a `runnable` has a `name`, the `command` to execute and `dependencies`. The `dependencies` will run before the runnable's command. 
 
 ## Example yml file
 
@@ -21,31 +21,33 @@ actions:
         command: "echo world"
 ```
 
-# How to setup CLIManager
-## Building CLIManager
+# How to setup bluff
+## Building bluff
 1. First step, clone this repo. 
 2. Build the project. This should be as simple as:
 ```
-go build -o CLIManager
+go build -o bluff
 ```
-3. Create an actions yml file. You can use the example provided above.
-4. Once the project is built, run the following:
-```
-./CLIManager --init
-```
-4.1 For shell, I specify `zsh`
 
-4.2 The action files, you need to specify the absolute path to your action files. You can test with this file `https://raw.githubusercontent.com/darrenleak/CLIManager/main/actions.yml`
+## After building/downloading bluff
+1. Create an actions yml file. You can use the example provided above.
+2. Once the project is built, run the following:
+```
+./bluff --init
+```
+3.1 For shell, use `zsh`
 
-# Using CLIManager
-Once you have built CLIManager you can do the following:
+3.2 The action files, you need to specify the absolute path to your action files. You can test with this file `https://raw.githubusercontent.com/darrenleak/bluff/main/actions.yml`
+
+# Using bluff
+Once you have built bluff you can do the following:
 ```
 ./CLIMananger helloWorld
 ```
 
 The `helloWorld` argument is the `action` name from the yml file example above. When you add new actions, you would use that action's name instead.
 
-# CLIManager Commands
+# bluff Commands
 ```
 --init                Setup the config file by asking a few questions
 --shell               Allow you to update the shell setting in the config
