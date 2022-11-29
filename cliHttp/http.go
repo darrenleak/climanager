@@ -58,7 +58,7 @@ func DownloadFile(urlString string) (*string, error) {
 	}
 	defer response.Body.Close()
 
-	fileHandle, err := os.OpenFile(outputFilePath, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0644)
+	fileHandle, err := os.OpenFile(outputFilePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		fmt.Println("Error opening file: ", err)
 		return nil, err

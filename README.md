@@ -30,7 +30,7 @@ go build -o bluff
 ```
 
 ## After building/downloading bluff
-1. Create an actions yml file. You can use the example provided above. Or you can test with this file `https://raw.githubusercontent.com/darrenleak/bluff/main/actions.yml`
+1. Create an actions yml file. You can use the example provided above. Or you can test with this file `https://raw.githubusercontent.com/darrenleak/CLIManager/main/actions.yml`
 2. Once the project is built, run the following:
 ```
 ./bluff --init
