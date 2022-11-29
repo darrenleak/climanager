@@ -35,7 +35,7 @@ go build -o CLIManager
 ```
 4.1 For shell, I specify `zsh`
 
-4.2 The action files, you need to specify the absolute path to your action files
+4.2 The action files, you need to specify the absolute path to your action files. You can test with this file `https://raw.githubusercontent.com/darrenleak/CLIManager/main/actions.yml`
 
 # Using CLIManager
 Once you have built CLIManager you can do the following:
