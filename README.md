@@ -30,14 +30,14 @@ go build -o bluff
 ```
 
 ## After building/downloading bluff
-1. Create an actions yml file. You can use the example provided above.
+1. Create an actions yml file. You can use the example provided above. Or you can test with this file `https://raw.githubusercontent.com/darrenleak/bluff/main/actions.yml`
 2. Once the project is built, run the following:
 ```
 ./bluff --init
 ```
 3.1 For shell, use `zsh`
 
-3.2 The action files, you need to specify the absolute path to your action files. You can test with this file `https://raw.githubusercontent.com/darrenleak/bluff/main/actions.yml`
+3.2 The action files, you need to specify the absolute path to your action files.
 
 # Using bluff
 Once you have built bluff you can do the following:
