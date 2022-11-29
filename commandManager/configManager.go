@@ -57,15 +57,15 @@ func InitConfig() {
 	questions := []ConfigInitQuestion{
 		{
 			Shell,
-			"Shell(default is Bash):",
+			"Specify shell to use(default is [bash]):",
 		},
 		{
 			Profile,
-			"zsh/bash profile(Absolute path):",
+			"zsh/bash profile path(Absolute path):",
 		},
 		{
 			CommandFiles,
-			"Action files(Absolute path)",
+			"Action files path/url(Absolute path)",
 		},
 	}
 	initValues := ConfigInitQuestions{
@@ -85,9 +85,13 @@ func InitConfig() {
 
 		line = strings.TrimSuffix(line, "\n")
 
-		if len(line) == 0 {
+		if len(line) == 0 && question.Arg != Shell {
 			fmt.Println("Value is required for: ", question.Arg)
 			return
+		}
+
+		if len(line) == 0 && question.Arg == Shell {
+			line = "bash"
 		}
 
 		inputValues = append(inputValues, ConfigPartial{
