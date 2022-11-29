@@ -17,3 +17,7 @@ jobs:
           go-version: 1.19.x
       - name: Build
         run: go build -o ./archive/bluff
+      - uses: actions/upload-artifact@v3
+        with:
+          name: bluff
+          path: ./artifact/bluff
