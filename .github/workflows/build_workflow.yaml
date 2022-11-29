@@ -16,14 +16,14 @@ jobs:
         with:
           go-version: 1.19.x
       - name: Build
-        run: go build -o ./archive/bluff
+        run: go build -o ./archive/${{matrix.os}}/bluff
       # - name: Zip 
       #   run: zip ./archive/bluff.zip ./archive/bluff; rm -rf bluff
       - uses: actions/upload-artifact@v3
         id: upload_artifact
         with:
           name: bluff
-          path: ./archive
+          path: ./archive/${{matrix.os}}
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -41,6 +41,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ./archive/bluff
+          asset_path: ./archive/${{matrix.os}}/bluff
           asset_name: bluff
           asset_content_type: application/octet-stream
