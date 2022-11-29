@@ -7,7 +7,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -17,8 +17,8 @@ jobs:
           go-version: 1.19.x
       - name: Build
         run: go build -o ./archive/bluff
-      - name: Zip 
-        run: zip ./archive/bluff.zip ./archive/bluff; rm -rf bluff
+      # - name: Zip 
+      #   run: zip ./archive/bluff.zip ./archive/bluff; rm -rf bluff
       - uses: actions/upload-artifact@v3
         id: upload_artifact
         with:
