@@ -11,8 +11,16 @@ import (
 )
 
 func IsCommandFileURL(commandFilePath string) bool {
-	_, err := url.ParseRequestURI(commandFilePath)
-	return !(err == nil)
+	url, err := url.ParseRequestURI(commandFilePath)
+	if err != nil {
+		return false
+	}
+
+	if len(url.Host) > 0 {
+		return true
+	}
+
+	return false
 }
 
 func DownloadFile(urlString string) (*string, error) {

@@ -156,7 +156,7 @@ func downloadCommandFiles(commandFiles []string) map[string]string {
 	downloadedFiles := map[string]string{}
 
 	for _, commandFile := range commandFiles {
-		if cliHttp.IsCommandFileURL(commandFile) {
+		if !cliHttp.IsCommandFileURL(commandFile) {
 			continue
 		}
 
