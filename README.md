@@ -44,7 +44,7 @@ brew install darrenleak/climanager-tap/climanager
 3.2 The action files, you need to specify the absolute path to your action files.
 
 # Using climanager
-Once you have built climanager you can do the following:
+Once you have installed climanager you can do the following:
 ```
 climanager helloWorld
 ```
