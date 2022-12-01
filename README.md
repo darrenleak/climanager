@@ -54,8 +54,8 @@ The `helloWorld` argument is the `action` name from the yml file provided from t
 --shell               Allow you to update the shell setting in the config
 --profile             Allow you to update the profile setting in the config
 --commandFiles        Allow you to update the command files in the config
---commandFilesAppend  Allow you to append to the command files in the config
---commandFilesRemove  Allow you to remove from the command files in the config
+--commandFilesAppend  Allow you to append to the command files in the config. Use the absolute file path.
+--commandFilesRemove  Allow you to remove from the command files in the config. Use the absolute file path.
 --listCommands        List all the actions
 --viewConfig          Print out the current config file
 --help                Shows help, what you are seeing now :)
