@@ -21,16 +21,17 @@ actions:
         command: "echo world"
 ```
 
-# How to setup climanager
-## Building climanager
-1. First step, clone this repo. 
-2. Build the project. This should be as simple as:
+# Installing climanager
+`brew`
 ```
-go build -o climanager
+brew tap darrenleak/climanager-tap
+```
+```
+brew install darrenleak/climanager-tap/climanager
 ```
 
-## After building/downloading climanager
-1. Create an actions yml file. You can use the example provided above. Or you can test with this file `https://raw.githubusercontent.com/darrenleak/CLIManager/main/actions.yml`
+## After installing
+1. Create an actions yml file. You can use the following as an example file: `https://raw.githubusercontent.com/darrenleak/CLIManager/main/actions.yml`
 2. Once the project is built, run the following:
 ```
 ./climanager --init
@@ -42,10 +43,10 @@ go build -o climanager
 # Using climanager
 Once you have built climanager you can do the following:
 ```
-./CLIMananger helloWorld
+climanager helloWorld
 ```
 
-The `helloWorld` argument is the `action` name from the yml file example above. When you add new actions, you would use that action's name instead.
+The `helloWorld` argument is the `action` name from the yml file provided from the URL above. When you add new actions, you would use that action's name instead.
 
 # climanager Commands
 ```
