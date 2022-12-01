@@ -22,7 +22,7 @@ actions:
 ```
 
 # Installing climanager
-## Using `brew(macOs):
+## Using homebrew(macOs):
 Add the `tap`:
 ```
 brew tap darrenleak/climanager-tap
