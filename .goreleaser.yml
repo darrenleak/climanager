@@ -24,3 +24,9 @@ brews:
     tap:
       owner: darrenleak
       name: climanager-tap
+    commit_author:
+      name: darrenleak
+      email: dleak22@gmail.com
+
+checksum:
+  name_template: 'checksums.txt'
