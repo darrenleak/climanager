@@ -22,10 +22,13 @@ actions:
 ```
 
 # Installing climanager
-`brew`
+## Using `brew`:
+Add the `tap`:
 ```
 brew tap darrenleak/climanager-tap
 ```
+
+Brew install:
 ```
 brew install darrenleak/climanager-tap/climanager
 ```
