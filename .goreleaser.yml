@@ -24,7 +24,7 @@ brews:
     homepage: https://github.com/darrenleak/climanager
     tap:
       owner: darrenleak
-      name: climanager-tap 
+      name: climanager
     commit_author:
       name: darrenleak
       email: dleak22@gmail.com
