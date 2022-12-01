@@ -12,6 +12,7 @@ import (
 	"CLIManager/commandManager"
 	"CLIManager/interpreter"
 	"CLIManager/orchestrator"
+	"fmt"
 	"os"
 )
 
@@ -51,10 +52,15 @@ var config commandManager.Config
 
 func main() {
 	args := os.Args
+
+	if len(args) == 1 {
+		fmt.Println("Feature coming soon")
+		return
+	}
+
 	requireInit, loadedConfig := commandManager.RequireCliSetup()
 	hasActioned := commandManager.ParseArgs(args, requireInit)
 
-	// TODO: Test code
 	parsedCommands := commandManager.Parse(args)
 
 	if hasActioned {
@@ -62,7 +68,6 @@ func main() {
 	}
 
 	config = loadedConfig
-	// allRunnables = setupCommands(config.CommandFiles)
 	commands := orchestrator.BuildCommandTree(config)
 	interpreter.InterpretCommands(
 		parsedCommands,
@@ -70,6 +75,4 @@ func main() {
 		commands,
 		config,
 	)
-
-	// runAction(actionToRun)
 }

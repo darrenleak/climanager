@@ -102,7 +102,13 @@ func InitConfig() {
 
 	updateConfig := buildConfig(inputValues, config)
 
-	WriteConfig(updateConfig)
+	err := WriteConfig(updateConfig)
+	if err != nil {
+		fmt.Println("Failed to initialise app")
+		return
+	}
+
+	fmt.Println("Successfully initialised app")
 }
 
 /*
@@ -188,7 +194,14 @@ func AppendCommandFilePath(config Config, commandFilePath string) {
 	}
 
 	config.CommandFiles = append(config.CommandFiles, commandFilePath)
-	WriteConfig(config)
+	err = WriteConfig(config)
+
+	if err != nil {
+		fmt.Println("Failed to append command file: ", commandFilePath)
+		return
+	}
+
+	fmt.Println("Appended command file successfully: ", commandFilePath)
 }
 
 func RemoveCommandFilePath(config Config, commandFilePath string) {
@@ -203,7 +216,14 @@ func RemoveCommandFilePath(config Config, commandFilePath string) {
 
 	config.CommandFiles = newCommandFiles
 
-	WriteConfig(config)
+	err := WriteConfig(config)
+
+	if err != nil {
+		fmt.Println("Failed to remove command file: ", commandFilePath)
+		return
+	}
+
+	fmt.Println("Removed command file successfully: ", commandFilePath)
 }
 
 func Updateshell(config Config, shell string) {
@@ -212,7 +232,14 @@ func Updateshell(config Config, shell string) {
 	}
 
 	config.Shell = strings.TrimSuffix(shell, "\n")
-	WriteConfig(config)
+	err := WriteConfig(config)
+
+	if err != nil {
+		fmt.Println("Failed to update shell: ", shell)
+		return
+	}
+
+	fmt.Println("Updated shell successfully: ", shell)
 }
 
 func UpdateProfile(config Config, profilePath string) {
@@ -221,10 +248,24 @@ func UpdateProfile(config Config, profilePath string) {
 	}
 
 	config.Profile = strings.TrimSuffix(profilePath, "\n")
-	WriteConfig(config)
+	err := WriteConfig(config)
+
+	if err != nil {
+		fmt.Println("Failed to update profile: ", profilePath)
+		return
+	}
+
+	fmt.Println("Updated profile successfully: ", profilePath)
 }
 
-func WriteConfig(config Config) {
+func WriteConfig(config Config) error {
 	file, _ := json.MarshalIndent(config, "", "  ")
-	_ = ioutil.WriteFile("./config.json", file, 0644)
+	err := ioutil.WriteFile("./config.json", file, 0644)
+
+	if err != nil {
+		fmt.Println("Failed to write config: ", err)
+		return err
+	}
+
+	return nil
 }

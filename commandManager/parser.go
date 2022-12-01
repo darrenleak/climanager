@@ -24,7 +24,8 @@ const (
 	CommandFiles       string = "--commandFiles"
 	CommandFilesAppend string = "--commandFilesAppend"
 	CommandFilesRemove string = "--commandFilesRemove"
-	ListCommands       string = "--listCommands"
+	ListCommandFiles   string = "--listCommandFiles"
+	ListActions        string = "--listActions"
 	ViewConfig         string = "--viewConfig"
 	Help               string = "--help"
 )
