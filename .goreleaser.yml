@@ -1,15 +1,16 @@
 builds:
-  binary: bluff
-  goos:
-    - darwin
-    - linux
-  goarch:
-    - arm64
-    - amd64
-  env:
-    - CGO_ENABLED=0
-  flags:
-    - -mod=vendor
+  -
+    binary: bluff
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - arm64
+      - amd64
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -mod=vendor
 
 release:
   prerelease: auto
