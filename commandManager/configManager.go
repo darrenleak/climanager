@@ -17,10 +17,11 @@ type ConfigPartial struct {
 }
 
 type Config struct {
-	Shell            string
-	Profile          string
-	CommandFiles     []string
-	CommandFilesUrls map[string]string
+	Shell             string
+	Profile           string
+	CommandFiles      []string
+	CommandFilesUrls  map[string]string
+	DefaultActionFile string
 }
 
 type ConfigInitQuestion struct {
@@ -201,6 +202,11 @@ func AppendCommandFilePath(config Config, commandFilePath string) {
 		return
 	}
 
+	err = UseActionFile(config, commandFilePath)
+	if err != nil {
+		return
+	}
+
 	fmt.Println("Appended command file successfully: ", commandFilePath)
 }
 
@@ -256,6 +262,23 @@ func UpdateProfile(config Config, profilePath string) {
 	}
 
 	fmt.Println("Updated profile successfully: ", profilePath)
+}
+
+func UseActionFile(config Config, actionFilePath string) error {
+	if len(actionFilePath) == 0 || actionFilePath == "\n" {
+		return nil
+	}
+
+	config.DefaultActionFile = strings.TrimSuffix(actionFilePath, "\n")
+	err := WriteConfig(config)
+
+	if err != nil {
+		fmt.Println("Failed to update default action file: ", actionFilePath)
+		return err
+	}
+
+	fmt.Println("Updated default action file to use", actionFilePath)
+	return nil
 }
 
 func WriteConfig(config Config) error {

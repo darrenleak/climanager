@@ -53,20 +53,19 @@ var config commandManager.Config
 func main() {
 	args := os.Args
 
+	requireInit, loadedConfig := commandManager.RequireCliSetup()
+	hasActioned := commandManager.ParseArgs(args, requireInit)
+
 	if len(args) == 1 {
 		fmt.Println("Feature coming soon")
 		return
 	}
 
-	requireInit, loadedConfig := commandManager.RequireCliSetup()
-	hasActioned := commandManager.ParseArgs(args, requireInit)
-
-	parsedCommands := commandManager.Parse(args)
-
 	if hasActioned {
 		return
 	}
 
+	parsedCommands := commandManager.Parse(args)
 	config = loadedConfig
 	commands := orchestrator.BuildCommandTree(config)
 	interpreter.InterpretCommands(

@@ -41,20 +41,13 @@ type RunnableStatus struct {
 
 func BuildCommandTree(
 	config commandManager.Config,
-) []map[string]map[string]Runnable {
-	var commands []map[string]map[string]Runnable
-
-	actionFilePaths := config.CommandFiles
-	for _, path := range actionFilePaths {
-		commandTree, err := setupCommands(path)
-		if err != nil {
-			continue
-		}
-
-		commands = append(commands, commandTree)
+) map[string]map[string]Runnable {
+	commandTree, err := setupCommands(config.DefaultActionFile)
+	if err != nil {
+		return nil
 	}
 
-	return commands
+	return commandTree
 }
 
 var dependentsMap = make(map[string][]string)

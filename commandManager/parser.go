@@ -28,6 +28,7 @@ const (
 	ListActions        string = "--listActions"
 	ViewConfig         string = "--viewConfig"
 	Help               string = "--help"
+	Use                string = "--use"
 )
 
 type CommandType string

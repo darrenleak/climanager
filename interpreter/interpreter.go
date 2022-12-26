@@ -12,13 +12,13 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-var parsedActions []map[string]map[string]orchestrator.Runnable
+var parsedActions map[string]map[string]orchestrator.Runnable
 var currentConfig commandManager.Config
 
 func InterpretCommands(
 	parsedCommands commandManager.ParsedCommands,
 	requireInit bool,
-	allCommands []map[string]map[string]orchestrator.Runnable,
+	allCommands map[string]map[string]orchestrator.Runnable,
 	config commandManager.Config,
 ) {
 	if parsedCommands[0].Command == commandManager.Help {
@@ -39,7 +39,7 @@ func InterpretCommands(
 			interpretCommandWithValue(command)
 		} else if !commandExists {
 			// TODO: This is not great, as this is acting like a value, but it is a command
-			orchestrator.Run(currentConfig, command.Value, allCommands[0])
+			orchestrator.Run(currentConfig, command.Value, allCommands)
 		}
 	}
 }
@@ -47,16 +47,27 @@ func InterpretCommands(
 func interpretCommandWithValue(
 	command commandManager.ParsedCommand,
 ) {
-	if commandRequiresInput(command) {
-		switch command.Command {
-		case commandManager.CommandFilesAppend:
-			commandFilesAppend(command.Value)
-		case commandManager.CommandFilesRemove:
-			commandFilesRemove(command.Value)
-		case commandManager.Shell:
-			updateShell(command.Value)
-		}
+	if !commandRequiresInput(command) {
+		return
+	}
 
+	if command.Command == commandManager.CommandFilesAppend {
+		commandFilesAppend(command.Value)
+		return
+	}
+
+	if command.Command == commandManager.CommandFilesRemove {
+		commandFilesRemove(command.Value)
+		return
+	}
+
+	if command.Command == commandManager.Shell {
+		updateShell(command.Value)
+		return
+	}
+
+	if command.Command == commandManager.Use {
+		useActionFile(command.Value)
 		return
 	}
 }
@@ -79,6 +90,9 @@ func interpretCommandWithoutValue(
 		case commandManager.Profile:
 			profilePath := commandManager.ReadUserInput("Absolute path to profile file(zsh, bash, etc)")
 			updateProfile(profilePath)
+		case commandManager.Use:
+			actionFileUsePath := commandManager.ReadUserInput("Absolute path to action file(Use climanager --listCommandFiles to find the absolute path)")
+			useActionFile(actionFileUsePath)
 		}
 
 		return
@@ -96,6 +110,10 @@ func interpretCommandWithoutValue(
 
 func updateShell(shell string) {
 	commandManager.Updateshell(currentConfig, shell)
+}
+
+func useActionFile(actionFilePath string) {
+	commandManager.UseActionFile(currentConfig, actionFilePath)
 }
 
 func updateProfile(profilePath string) {
@@ -129,7 +147,7 @@ func viewConfig() {
 
 func listActions() {
 	var outputActions []string
-	actions := parsedActions[0]
+	actions := parsedActions
 
 	for action := range actions {
 		outputActions = append(outputActions, action)
@@ -168,5 +186,6 @@ func printHelp() {
 	fmt.Println(commandManager.CommandFilesRemove, " Allow you to remove from the command files in the config. Use the absolute file path.")
 	fmt.Println(commandManager.ListActions, "        List all the actions")
 	fmt.Println(commandManager.ViewConfig, "         Print out the current config file")
+	fmt.Println(commandManager.Use, "                Specify an action file to use. Requires the absolute path for the action file.")
 	fmt.Println(commandManager.Help, "               Shows help, what you are seeing now :)")
 }
