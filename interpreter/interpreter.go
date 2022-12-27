@@ -149,6 +149,11 @@ func listActions() {
 	var outputActions []string
 	actions := parsedActions
 
+	if len(actions) == 0 {
+		fmt.Println("Default action file not specified. Run climanager --use to specify a default action file")
+		return
+	}
+
 	for action := range actions {
 		outputActions = append(outputActions, action)
 	}
@@ -168,14 +173,14 @@ func listCommandFiles() {
 func commandRequiresInput(
 	command commandManager.ParsedCommand,
 ) bool {
-	commandsRequiringInput := []string{
+	commandsNotRequiringInput := []string{
 		commandManager.CommandFiles,
 		commandManager.ListActions,
 		commandManager.ViewConfig,
 		commandManager.ListCommandFiles,
 	}
 
-	return !slices.Contains(commandsRequiringInput, command.Command)
+	return !slices.Contains(commandsNotRequiringInput, command.Command)
 }
 
 func printHelp() {
